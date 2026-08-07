@@ -1,0 +1,53 @@
+{
+  "result_keys": [
+    "lgb123",
+    "lgb42",
+    "lgb7",
+    "cb42",
+    "cb7",
+    "cb123",
+    "tabicl_A",
+    "tabicl_B"
+  ],
+  "stacker": {
+    "kind": "positive_ridge",
+    "coef": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0422716960310936,
+      0.09353841096162796,
+      0.7117284536361694,
+      0.038138117641210556
+    ],
+    "intercept": 0.0,
+    "rmse": 11.132055108464952,
+    "history": [],
+    "hill_precision": 0.01
+  },
+  "use_ridge": true,
+  "ridge_alpha": 1.0,
+  "ridge_fit_intercept": false,
+  "ridge_coef": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0422716960310936,
+    0.09353841096162796,
+    0.7117284536361694,
+    0.038138117641210556
+  ],
+  "ridge_intercept": 0.0,
+  "simple_avg_oof": 11.633541146072275,
+  "ridge_oof": 11.132055108464952,
+  "final_oof": 11.132055108464952,
+  "postproc_alpha": 1.0000000000000004,
+  "postproc_tau": null,
+  "postproc_w_pf": 0.15000000000000002,
+  "postproc_oof_rmse": 11.033096313476562,
+  "fallback_tvt": 11545.6572265625,
+  "exact_overlap_enabled": true,
+  "exact_blend_weight": 0.28
+}

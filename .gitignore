@@ -1,0 +1,10 @@
+*.csv
+
+# individual files exceeding GitHub's 100MB hard limit
+more_files/rogii-tabicl-mirror/tabicl-regressor-v2-20260212.ckpt
+more_files/rogii-tabicl-mirror-duplicate/tabicl-regressor-v2-20260212.ckpt
+more_files/wellbore-geology-prediction-artifacts/models/lightgbm-3/lgbmregressor_trainer_20260526192806.pkl
+more_files/wellbore-geology-prediction-artifacts/models/lightgbm-2/lgbmregressor_trainer_20260526190415.pkl
+more_files/wellbore-geology-prediction-artifacts/models/catboost-1/catboostregressor_trainer_20260526193740.pkl
+more_files/wellbore-geology-prediction-artifacts/models/lightgbm-1/lgbmregressor_trainer_20260526182612.pkl
+more_files/wellbore-geology-prediction-artifacts/models/catboost-2/catboostregressor_trainer_20260526194838.pkl

@@ -1,0 +1,6 @@
+{
+  "alpha": 1.05,
+  "fade_tau_md": 120.0,
+  "savgol_window": 25,
+  "savgol_poly": 3
+}

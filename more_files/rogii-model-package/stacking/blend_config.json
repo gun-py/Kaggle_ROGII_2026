@@ -1,0 +1,42 @@
+{
+  "target_space": "delta",
+  "prediction_space": "delta",
+  "weights": {
+    "pred_delta_drift_ncc_xgb_alltrain": 1.5892648102940382e-13,
+    "pred_delta_drift_ncc_catboost_alltrain": 0.4496275000862294,
+    "pred_delta_drift_ncc_hgb_alltrain": 0.11778391093203576,
+    "pred_delta_drift_ncc_lgb_alltrain": 0.015092347744043756,
+    "pred_delta_sequence_tcn_tcn_residual": 0.4174962412375321
+  },
+  "family_weights": {
+    "xgb": 1.5892648102940382e-13,
+    "catboost": 0.4496275000862294,
+    "hgb": 0.11778391093203576,
+    "lgb": 0.015092347744043756,
+    "sequence_tcn": 0.4174962412375321
+  },
+  "anchor_weight": 0.0,
+  "weight_source": "groupkfold_oof_tree_plus_sequence_tcn",
+  "inference_model_mode": "alltrain",
+  "train_all_models": true,
+  "oof_imputer_mode": "global_train_self_exclude_query_well",
+  "blend_l2": 1e-05,
+  "raw_oof_rmse": 10.710644759166774,
+  "oof_rmse": 10.670210997493676,
+  "oof_rows_used": 3783989,
+  "oof_complete_rate": 1.0,
+  "n_splits": 5,
+  "folds_run": 5,
+  "submission_ready": true,
+  "enforce_nonnegative": true,
+  "max_weight_sum": 1.0,
+  "postprocess": {
+    "alpha": 1.05,
+    "fade_tau_md": null,
+    "savgol_window": 25,
+    "savgol_poly": 2
+  },
+  "tvt_clip_min": null,
+  "tvt_clip_max": null,
+  "tcn_augmented": true
+}

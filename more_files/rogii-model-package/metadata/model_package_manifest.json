@@ -1,0 +1,108 @@
+{
+  "schema_version": "rogii_hidden_model_package_v1",
+  "created_at": "2026-05-31T12:19:13.783856+00:00",
+  "package_type": "rogii_hidden_model_package",
+  "hidden_inference_supported": true,
+  "seed": 42,
+  "source_notebook": "ROGII_10_train_prediction_branches.ipynb",
+  "training_feature_version": "drift_ncc_model_package_v1",
+  "mode": "drift_ncc_groupkfold_alltrain_model_package",
+  "submission_ready": true,
+  "n_splits": 5,
+  "folds_run": 5,
+  "oof_rows_used": 3783989,
+  "oof_complete_rate": 1.0,
+  "train_all_models": true,
+  "inference_model_mode": "alltrain",
+  "oof_imputer_mode": "global_train_self_exclude_query_well",
+  "oof_imputer_note": "OOF feature generation excludes the query well from formation features, but does not rebuild formation/KNN imputers separately for each validation fold.",
+  "target_space": "delta",
+  "missing_value_policy": "native",
+  "feature_sets": {
+    "drift_ncc_v1": {
+      "source_feature_set": "sequence_tcn_checkpoint",
+      "feature_count": 480
+    }
+  },
+  "models": [
+    {
+      "branch_name": "drift_ncc",
+      "model_name": "xgb_alltrain",
+      "model_family": "xgb",
+      "fold": "alltrain",
+      "prediction_column": "pred_delta_drift_ncc_xgb_alltrain",
+      "model_type": "xgboost_json",
+      "path": "models/drift_ncc_xgb_alltrain.json",
+      "feature_set": "drift_ncc_v1",
+      "target_space": "delta"
+    },
+    {
+      "branch_name": "drift_ncc",
+      "model_name": "catboost_alltrain",
+      "model_family": "catboost",
+      "fold": "alltrain",
+      "prediction_column": "pred_delta_drift_ncc_catboost_alltrain",
+      "model_type": "catboost_cbm",
+      "path": "models/drift_ncc_catboost_alltrain.cbm",
+      "feature_set": "drift_ncc_v1",
+      "target_space": "delta"
+    },
+    {
+      "branch_name": "drift_ncc",
+      "model_name": "hgb_alltrain",
+      "model_family": "hgb",
+      "fold": "alltrain",
+      "prediction_column": "pred_delta_drift_ncc_hgb_alltrain",
+      "model_type": "sklearn_pickle",
+      "path": "models/drift_ncc_hgb_alltrain.joblib",
+      "feature_set": "drift_ncc_v1",
+      "target_space": "delta",
+      "missing_value_policy": "zero",
+      "fillna": 0.0
+    },
+    {
+      "branch_name": "drift_ncc",
+      "model_name": "lgb_alltrain",
+      "model_family": "lgb",
+      "fold": "alltrain",
+      "prediction_column": "pred_delta_drift_ncc_lgb_alltrain",
+      "model_type": "lightgbm_booster",
+      "path": "models/drift_ncc_lgb_alltrain.txt",
+      "feature_set": "drift_ncc_v1",
+      "target_space": "delta"
+    },
+    {
+      "branch_name": "sequence_tcn",
+      "model_name": "tcn_residual",
+      "model_family": "sequence_tcn",
+      "fold": "alltrain",
+      "prediction_column": "pred_delta_sequence_tcn_tcn_residual",
+      "model_type": "torch_tcn",
+      "path": "models/sequence_tcn_tcn_residual.pt",
+      "feature_set": "drift_ncc_v1",
+      "target_space": "delta",
+      "sequence_group_column": "well_id",
+      "sequence_order_column": "row_index"
+    }
+  ],
+  "feature_columns": "feature_builders/feature_columns.json",
+  "blend_config": "stacking/blend_config.json",
+  "postprocess_config": "postprocess/postprocess_config.json",
+  "oof": {
+    "train_gt": "oof/train_gt.parquet",
+    "blend_oof": "oof/blend_oof.npy",
+    "blend_oof_postprocessed": "oof/blend_oof_postprocessed.npy",
+    "families": {
+      "xgb": "oof/xgb_oof.npy",
+      "catboost": "oof/catboost_oof.npy",
+      "hgb": "oof/hgb_oof.npy",
+      "lgb": "oof/lgb_oof.npy",
+      "sequence_tcn": "oof/sequence_tcn_oof.npy"
+    }
+  },
+  "updated_at": "2026-05-31T22:08:35.984974+00:00",
+  "package_variant": "tree_plus_sequence_tcn",
+  "tcn_augmented": true,
+  "tcn_checkpoint_source": "/workspace/rogii/outputs/tcn_sequence_residual/models/tcn_alltrain.pt",
+  "tcn_oof_source": "/workspace/rogii/outputs/tcn_sequence_residual/preds/sequence_tcn_oof.parquet"
+}
