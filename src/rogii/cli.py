@@ -60,6 +60,29 @@ def _cv(args) -> None:
     cv.run(args.kind, data, out, n_wells=args.wells, seed=args.seed)
 
 
+def _attn(args) -> None:
+    from rogii import paths
+    from rogii.attention import evaluate
+    from rogii.attention.config import load_config
+
+    data = paths.competition_dir(args.data)
+    out = Path(args.out or "artifacts/attention")
+    cache = out / "wellset.pkl"
+    overrides = {}
+    if args.epochs:
+        overrides["finetune_epochs"] = args.epochs
+    cfg = load_config(args.config, **overrides)
+    if args.action == "pretrain":
+        evaluate.pretrain_run(data, out / "pretrain.pt", cfg, args.steps, cache)
+    elif args.action == "holdout":
+        evaluate.holdout(data, out / "holdout", cfg, args.ablation, args.init, args.wells, args.seed, cache)
+    elif args.action == "cv":
+        evaluate.cross_validate(data, out / "cv", cfg, args.init, args.folds, args.seed, cache)
+    else:
+        sub = evaluate.predict_test(data, Path(args.checkpoint), paths.work_dir(args.submission_dir), cache)
+        print(f"wrote {len(sub)} rows")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="rogii", description="ROGII wellbore TVT prediction")
     parser.add_argument("--version", action="version", version=f"rogii {__version__}")
@@ -100,6 +123,22 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--wells", type=int, default=250, help="number of train wells to score")
     p.add_argument("--seed", type=int, default=0)
     p.set_defaults(func=_cv)
+
+    p = sub.add_parser("attn", help="TRAIL attention model: pretrain, holdout, cv, predict")
+    p.add_argument("action", choices=["pretrain", "holdout", "cv", "predict"])
+    p.add_argument("--data")
+    p.add_argument("--out", help="run folder (default: artifacts/attention)")
+    p.add_argument("--config", default="trail")
+    p.add_argument("--init", help="pretrained checkpoint to start fine-tuning from")
+    p.add_argument("--ablation", default="full")
+    p.add_argument("--steps", type=int, help="pretraining steps")
+    p.add_argument("--epochs", type=int, help="fine-tuning epochs")
+    p.add_argument("--wells", type=int, default=100, help="held-out train wells")
+    p.add_argument("--folds", type=int, default=5)
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--checkpoint", help="fine-tuned checkpoint for `predict`")
+    p.add_argument("--submission-dir", help="where `predict` writes submission.csv")
+    p.set_defaults(func=_attn)
     return parser
 
 
