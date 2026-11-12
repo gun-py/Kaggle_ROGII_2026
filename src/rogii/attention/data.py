@@ -197,12 +197,19 @@ class NeighbourIndex:
         return nb, mask
 
 
+TEST_PREFIX = "test/"
+
+
 class WellSet:
-    """Wells, typewell grids and the neighbour index shared by every sampler."""
+    """Wells, typewell grids and the neighbour index shared by every sampler.
+
+    Test wells are keyed with a prefix: public test wells reuse the ids of their train copies.
+    """
 
     def __init__(self, train: dict[str, dict], test: dict[str, dict] | None = None):
         self.train_ids = sorted(train)
-        self.wells = {**train, **(test or {})}
+        self.test_ids = sorted(TEST_PREFIX + w for w in (test or {}))
+        self.wells = {**train, **{TEST_PREFIX + w: d for w, d in (test or {}).items()}}
         self.typewells = {w: typewell_grid(d["tw_tvt"], d["tw_gr"]) for w, d in self.wells.items()}
         self.index = NeighbourIndex(train, self.wells)
         self.fractions = np.array(

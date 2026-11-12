@@ -177,3 +177,10 @@ def test_cli_holdout_and_predict(competition, tmp_path, monkeypatch):
                  "--submission-dir", str(tmp_path / "sub")]) == 0  # fmt: skip
     sub = pd.read_csv(tmp_path / "sub" / "submission.csv")
     assert len(sub) == len(pd.read_csv(competition / "sample_submission.csv")) and sub.tvt.notna().all()
+
+
+def test_test_wells_never_shadow_train_copies(competition, ws):
+    from rogii.attention.data import TEST_PREFIX
+
+    assert all(w.startswith(TEST_PREFIX) for w in ws.test_ids)
+    assert all(np.isfinite(ws.wells[w]["tvt"]).all() for w in ws.train_ids)

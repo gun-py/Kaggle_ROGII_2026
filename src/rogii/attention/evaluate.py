@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 from rogii.attention.config import TrailConfig, ablated
-from rogii.attention.data import WellSet, rows_from_tokens
+from rogii.attention.data import TEST_PREFIX, WellSet, rows_from_tokens
 from rogii.attention.synthetic import SyntheticWells
 from rogii.diagnostics.cv import _sample_wells
 from rogii.io import read_sample, validate_submission
@@ -148,13 +148,12 @@ def predict_test(data_dir: Path, checkpoint: Path, out_dir: Path, cache=None) ->
     model = load(checkpoint, device)
     ws = wellset(data_dir, cache)
     everyone = frozenset(ws.train_ids)
-    test_ids = sorted(set(ws.wells) - everyone)
     rows = []
-    for w in test_ids:
+    for w in ws.test_ids:
         s = ws.sample(w, everyone, None, model.cfg.max_visible_tokens, model.cfg.use_neighbours)
         drift = predict(model, [s], device, model.cfg.token_budget)[0]
         tvt = rows_from_tokens(s, drift, ws.wells[w]["z"])
-        rows += [(f"{w}_{s.ia + 1 + i}", float(v)) for i, v in enumerate(tvt)]
+        rows += [(f"{w.removeprefix(TEST_PREFIX)}_{s.ia + 1 + i}", float(v)) for i, v in enumerate(tvt)]
     sample = read_sample(data_dir)
     sub = sample[["id"]].merge(pd.DataFrame(rows, columns=["id", "tvt"]), on="id", how="left")
     sub = validate_submission(sub, sample, "attention")
