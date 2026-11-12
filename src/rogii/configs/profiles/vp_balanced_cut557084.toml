@@ -1,0 +1,6 @@
+sp45_weight = 0.60
+
+[visible_prefix]
+profile = "balanced"
+final_selection = "profile"
+cut_fracs = [0.55, 0.70, 0.84]
