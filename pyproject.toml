@@ -39,6 +39,7 @@ rogii = ["configs/**/*.toml", "structural/weights/*"]
 line-length = 110
 target-version = "py311"
 src = ["src", "tests"]
+extend-exclude = ["artifacts", "data", "outputs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "W"]
@@ -49,6 +50,6 @@ ignore = ["E501", "B905"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q -m 'not parity'"
+addopts = "-m 'not parity'"
 markers = ["parity: compares against the legacy notebooks; needs data/raw and the legacy-notebooks tag"]
 filterwarnings = ["ignore::DeprecationWarning", "ignore::FutureWarning"]
