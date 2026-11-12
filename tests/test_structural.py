@@ -1,3 +1,5 @@
+import importlib.util
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -84,8 +86,8 @@ def test_every_variant_loads_and_predicts(fld, test_well, competition):
     ia = int(np.where(test_well["known"])[0][-1])
     carry = np.sqrt(np.mean((test_well["tvt"][ia] - truth[unknown]) ** 2))
     for name in variants.variant_names():
-        if name == "cv3":
-            pytest.importorskip("torch")
+        if name == "cv3" and importlib.util.find_spec("torch") is None:
+            continue
         variant = variants.load_variant(name)
         path, nearest = variant.predict(fld, test_well, {"te000000"})
         assert path.shape == test_well["md"].shape and np.isfinite(path[unknown]).all(), name
