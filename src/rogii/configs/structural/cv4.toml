@@ -1,0 +1,9 @@
+description = "cv2 members with a per-well struct weight that depends on neighbour distance."
+combiner = "ensemble"
+sanitize = false
+
+[blend]
+mode = "gated"
+no_neighbours = 0.30
+beyond = 0.30
+schedule = [[400.0, 0.40], [700.0, 0.45], [1200.0, 0.30]]

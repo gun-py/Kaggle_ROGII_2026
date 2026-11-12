@@ -1,0 +1,8 @@
+description = "Three-way blend with the tree-only package at 0.50. Scored worse than its components allow; kept for the record."
+combiner = "distance_bins"
+sanitize = false
+
+[blend]
+stack = 0.30
+struct = 0.20
+package = 0.50

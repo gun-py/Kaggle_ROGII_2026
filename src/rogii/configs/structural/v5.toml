@@ -1,0 +1,8 @@
+description = "Structural weights banded by neighbour distance and depth past the anchor; package off."
+combiner = "md_bands"
+sanitize = true
+
+[blend]
+stack = 0.57
+struct = 0.43
+package = 0.0

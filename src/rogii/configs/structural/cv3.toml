@@ -1,0 +1,7 @@
+description = "cv2 members plus GRU and TCN corrections (checkpoint in structural/weights), blended 0.40."
+combiner = "ensemble_seq"
+sanitize = false
+
+[blend]
+stack = 0.60
+struct = 0.40

@@ -1,0 +1,7 @@
+description = "v2 structural model at the leaderboard-solved blend weight 0.40."
+combiner = "distance_bins"
+sanitize = false
+
+[blend]
+stack = 0.60
+struct = 0.40

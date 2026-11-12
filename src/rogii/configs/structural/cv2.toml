@@ -1,0 +1,7 @@
+description = "Refit, ElasticNet and PLS members averaged in drift space, blended 0.40."
+combiner = "ensemble"
+sanitize = false
+
+[blend]
+stack = 0.60
+struct = 0.40
