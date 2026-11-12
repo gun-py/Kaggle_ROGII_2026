@@ -25,6 +25,9 @@ def pick_device() -> torch.device:
     return torch.device("cpu")
 
 
+SKIPPED = [0]
+
+
 def collate(samples: Sequence[Sample], device) -> dict:
     B = len(samples)
     L = max(len(s) for s in samples)
@@ -92,9 +95,12 @@ def _step(model, opt, sched, batch, cfg):
     loss, mse = trail_loss(paths, info, batch, cfg)
     opt.zero_grad(set_to_none=True)
     loss.backward()
-    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-    opt.step()
+    norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
     sched.step()
+    if not torch.isfinite(norm):
+        SKIPPED[0] += 1
+        return float(loss.detach()), float(mse)
+    opt.step()
     return float(loss.detach()), float(mse)
 
 
@@ -115,7 +121,8 @@ def pretrain(cfg: TrailConfig, synth: SyntheticWells, device, steps: int | None 
             step += 1
             if step % 100 == 0:
                 log(
-                    f"pretrain step {step}/{steps}  rmse {np.sqrt(np.mean(running)):.2f} ft  {time.time() - t0:.0f}s"
+                    f"pretrain step {step}/{steps}  rmse {np.sqrt(np.mean(running)):.2f} ft  "
+                    f"skipped {SKIPPED[0]}  {time.time() - t0:.0f}s"
                 )
                 running = []
             if step >= steps:
@@ -191,7 +198,8 @@ def finetune(cfg: TrailConfig, ws: WellSet, train_ids: list[str], val_ids: list[
         history.append({"epoch": epoch, "train_rmse": float(np.sqrt(np.mean(mses))), "val_rmse": val_rmse,
                         "seconds": time.time() - t0})  # fmt: skip
         log(
-            f"epoch {epoch}/{epochs}  train {history[-1]['train_rmse']:.2f}  val {val_rmse:.2f} ft  {time.time() - t0:.0f}s"
+            f"epoch {epoch}/{epochs}  train {history[-1]['train_rmse']:.2f}  val {val_rmse:.2f} ft  "
+            f"skipped {SKIPPED[0]}  {time.time() - t0:.0f}s"
         )
         if val_rmse < best - 1e-3:
             best, best_state, stale = val_rmse, copy.deepcopy(model.state_dict()), 0

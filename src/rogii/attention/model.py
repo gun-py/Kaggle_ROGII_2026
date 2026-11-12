@@ -139,14 +139,14 @@ class NeighbourAttention(nn.Module):
         d = h.shape[-1]
         H, dh = self.heads, d // self.heads
         kv = torch.cat([self.kv(nb), self.null.expand(B, L, 1, 2 * d)], 2)
-        k, v = kv.view(B, L, M + 1, 2, H, dh).unbind(3)
-        q = self.q(h).view(B, L, H, dh)
-        logits = torch.einsum("blhd,blmhd->blhm", q, k) / math.sqrt(dh)
+        k, v = kv.view(B, L, M + 1, 2, H, dh).permute(3, 0, 1, 4, 2, 5).unbind(0)
+        q = self.q(h).view(B, L, H, 1, dh)
+        logits = (q @ k.transpose(-1, -2)).squeeze(-2) / math.sqrt(dh)
         log_dist = F.pad(nb[..., 1], (0, 1))
         logits = logits - F.softplus(self.reach)[:, None] * log_dist[:, :, None, :]
         keep = F.pad(mask, (0, 1), value=True)
-        a = logits.masked_fill(~keep[:, :, None, :], float("-inf")).softmax(-1)
-        y = torch.einsum("blhm,blmhd->blhd", a, v).reshape(B, L, d)
+        a = logits.masked_fill(~keep[:, :, None, :], -1e4).softmax(-1)
+        y = (a.unsqueeze(-2) @ v).squeeze(-2).reshape(B, L, d)
         return self.out(y), a
 
 
@@ -179,7 +179,7 @@ class Trail(nn.Module):
         B, L, d = h.shape
 
         nb, nb_attn = h.new_zeros(B, L, d), None
-        if self.neighbours is not None:
+        if self.neighbours is not None and bool(b["nb_mask"].any()):
             nb, nb_attn = self.neighbours(h, b["nb"], b["nb_mask"])
         tw = self.typewell(b["tw"], b["tw_pad"]) if self.typewell is not None else None
 
