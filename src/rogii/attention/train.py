@@ -96,11 +96,11 @@ def _step(model, opt, sched, batch, cfg):
     opt.zero_grad(set_to_none=True)
     loss.backward()
     norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-    sched.step()
-    if not torch.isfinite(norm):
+    if torch.isfinite(norm):
+        opt.step()
+    else:
         SKIPPED[0] += 1
-        return float(loss.detach()), float(mse)
-    opt.step()
+    sched.step()
     return float(loss.detach()), float(mse)
 
 
