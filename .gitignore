@@ -1,10 +1,26 @@
+# data and model binaries live outside git; see scripts/fetch_*.sh
+/data/
+/artifacts/
+/outputs/
 *.csv
+!tests/fixtures/*.csv
 
-# individual files exceeding GitHub's 100MB hard limit
-more_files/rogii-tabicl-mirror/tabicl-regressor-v2-20260212.ckpt
-more_files/rogii-tabicl-mirror-duplicate/tabicl-regressor-v2-20260212.ckpt
-more_files/wellbore-geology-prediction-artifacts/models/lightgbm-3/lgbmregressor_trainer_20260526192806.pkl
-more_files/wellbore-geology-prediction-artifacts/models/lightgbm-2/lgbmregressor_trainer_20260526190415.pkl
-more_files/wellbore-geology-prediction-artifacts/models/catboost-1/catboostregressor_trainer_20260526193740.pkl
-more_files/wellbore-geology-prediction-artifacts/models/lightgbm-1/lgbmregressor_trainer_20260526182612.pkl
-more_files/wellbore-geology-prediction-artifacts/models/catboost-2/catboostregressor_trainer_20260526194838.pkl
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# numba / editor / os
+*.nbi
+*.nbc
+.idea/
+.vscode/
+.DS_Store
